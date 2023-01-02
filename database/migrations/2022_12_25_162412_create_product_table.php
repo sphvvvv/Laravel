@@ -20,6 +20,7 @@ class CreateProductTable extends Migration
             $table->integer('brand_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
         });
     }
 

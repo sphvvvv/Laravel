@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\ProductMiddleware;
+use App\Http\Middleware\ProductMiddleware2;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,13 +15,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::resource('product', 'ProductController');
+
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('product', 'ProductController@index');
+Route::get('product', 'ProductController@index')
+//    ->middleware(ProductMiddleware::class)
+//    ->middleware(ProductMiddleware2::class)
+    ->middleware("product")
+    ;
 
-Route::get('product/{id}', 'ProductController@show');
+Route::get('product/{id?}', 'ProductController@show')
+    ->middleware("product");
+
 /*
 public function show($id)
 {
@@ -27,4 +37,3 @@ public function show($id)
 }
 */
 
-Route::resource('product', 'ProductController');
