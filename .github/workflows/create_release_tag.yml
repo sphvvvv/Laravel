@@ -18,7 +18,6 @@ jobs:
       - name: set tag name
         id: set_tag
         run: |
-#          echo "::set-output name=pre_tag::$(curl -H 'Accept: application/vnd.github.v3+json' -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)"
           echo "pre_tag=$(curl -H 'Accept: application/vnd.github.v3+json' -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)" >> $GITHUB_OUTPUT
 
       # タグを生成する 「{YYYY.MM.DD}-{当日リリース回数}」
