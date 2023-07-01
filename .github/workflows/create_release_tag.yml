@@ -1,4 +1,4 @@
-name: create release tag and release note
+name: create release tag and release
 on:
   push:
     branches: [ main ]
@@ -14,27 +14,27 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # 前タグ情報
-      - name: get_pre_tag
-        id: get_pre_tag
+      # タグ名
+      - name: set tag name
+        id: set_tag
         run: |
           echo "pre_tag=$(curl -H 'Accept: application/vnd.github.v3+json' -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)" >> $GITHUB_OUTPUT
 
-      # タグ名
-      - name: set_tag_name
-        id: set_tag_name
+      # タグを生成する
+      - name: Generate release tag
+        id: release_tag
         run: |
-          today=$(date +'v%Y%m%d_%H%M%S')
+          today=$(date +'%Y%m%d_%H%M%S')
           echo "release_tag=$today" >> $GITHUB_OUTPUT
 
-      # リリースノート
-      - name: set_release_note
-        id: set_release_note
+      # 前回リリースからの差分をもとに、リリースノートの本文を生成する
+      - name: Generate release note
+        id: release_note
         run: |
           echo "release_note=$(curl -X POST -H 'Accept: application/vnd.github.v3+json' -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/releases/generate-notes -d '{"tag_name":"${{ steps.release_tag.outputs.release_tag }}", "previous_tag_name":"${{ steps.pre_tag.outputs.pre_tag }}"}' | jq .body | sed 's/"//g')" >> $GITHUB_OUTPUT
 
-      # post
-      - name: post_release
+      # タグを切り、リリースノートを作成する
+      - name: Create Release
         run: |
           curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
