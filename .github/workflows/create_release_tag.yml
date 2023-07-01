@@ -20,9 +20,9 @@ jobs:
         run: |
           echo "pre_tag=$(curl -H 'Accept: application/vnd.github.v3+json' -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)" >> $GITHUB_OUTPUT
 
-      # タグを生成する
-      - name: Generate release tag
-        id: release_tag
+      # タグ名
+      - name: set_tag_name
+        id: set_tag_name
         run: |
           today=$(date +'v%Y%m%d_%H%M%S')
           echo "release_tag=$today" >> $GITHUB_OUTPUT
