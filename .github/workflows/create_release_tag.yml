@@ -1,29 +1,20 @@
-name: create release tag
-
+name: Git Tag
 on:
-  pull_request:
-    branches:
-      - main
-    types:
-      - closed
-
+ pull_request:
+   branches:
+     - main
+   types:
+     - closed
 jobs:
-  generate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Generate tag
-        run: |
-          export TAG_NAME=$(sed -n 6P pubspec.yaml | sed 's/version: //')
-          git tag $TAG_NAME
-          git push origin $TAG_NAME
-          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
-      - name: Generate release note
-        uses: softprops/action-gh-release@v1
-        with:
-          name: ${{ env.TAG_NAME }}
-          tag_name: ${{ env.TAG_NAME }}
-          generate_release_notes: true
- 
+ main:
+   runs-on: ubuntu-latest
+   if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
+   steps:
+     - uses: actions/checkout@v2
+     - run: git fetch origin ${{ github.event.pull_request.head.ref }}
+     - run: git checkout ${{ github.event.pull_request.head.ref }}
+     - run: git tag `echo '${{ github.event.pull_request.head.ref }}' | sed 's/release\///'`
+     - run: git push origin `echo '${{ github.event.pull_request.head.ref }}' | sed 's/release\///'`
+  
 
 #          datetime=$(date +'%Y.%m.%d %H:%M:%S')
