@@ -25,7 +25,7 @@ jobs:
       - name: Generate release tag
         id: release_tag
         run: |
-          datetime=$(date +'%Y.%m.%d %h:%i:%s')
+          datetime=$(date +'%Y.%m.%d %H:%M:%S')
           echo "::set-output name=release_tag::$datetime"
 
       # 前回リリースからの差分をもとに、リリースノートの本文を生成する
