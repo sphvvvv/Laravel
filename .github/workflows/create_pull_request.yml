@@ -3,7 +3,7 @@ on:
   pull_request:
     types: [opened]
     branches:
-      - master
+      - main
 jobs:
   auto_release:
     name: auto_release
@@ -22,3 +22,4 @@ jobs:
           body: ${{ github.event.pull_request.body }}
           draft: true
           prerelease: false
+ 
